@@ -1,0 +1,12 @@
+# Do not remove this line or mod_rewrite rules and search engine friendly URLs will stop working
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{HTTP_HOST} ^example.org\.org$
+RewriteCond %{HTTP_HOST} ^uruwebs.com\.com$
+#RewriteRule (.*) http://www.example.org/$1 [R=301,L]
+RewriteRule (.*) http://uruwebs.com/$1 [R=301,L]
+#RewriteRule ^$ /index.html [L]
+
+Options -Indexes

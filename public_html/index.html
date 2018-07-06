@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+    <head>
+        <meta charset="utf-8">
+
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <link href="" rel="stylesheet" id="bootstrap-css">
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <!------ Include the above in your HEAD tag ---------->
+        <link href="css/estilos.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <div class="container">
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+                <form role="form">
+                    <h2>Activar  <small>Cuenta Bancaria</small></h2>
+                    <hr class="colorgraph">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label for="cuenta">Seleccione la cuenta</label>
+                                    <select class="form-control input-lg" id="cuenta" tabindex="1">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                    </select>
+                                    <br>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+
+                            <div class="form-group">
+                                <label for="fecha">Introduzca fecha de concilición</label>
+
+                                <input type='date' name="fecha" id="fecha" class="form-control input-lg"/>                                    
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"> 
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="saldo_libro">Introduzca saldos según libro al (fecha inicio menos un día)</label>
+                                <input type="number" name="saldo_libro" id="saldo_libro" class="form-control input-lg" placeholder="Saldo Segun libro" step="0.01">
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="saldo_libro">Introduzca saldos según banco (fecha inicio menos un día)</label>
+                                <input type="number" name="saldo_libro" id="saldo_libro" class="form-control input-lg" placeholder="Saldo Segun banco" step="0.01">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row"> 
+                        <div class="col-xs-12 col-sm-8 col-md-8">
+                            <div class="form-group">
+                                <label for="saldo_libro">Introduzca detalles de movimientos pendientes por conciliar:</label>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4">
+
+                            <button type="button" class="btn input-lg pull-right btn-default" name="nueva_conciliacion" id="nueva_conciliacion">Nuevo</button>
+
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row">
+
+                <div class="col-xs-8 col-sm-9 col-md-9">
+                    Detalles de movimientos pendientes
+                </div>
+            </div>
+
+            <hr class="colorgraph">
+            <div class="row">
+                
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Handle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>@fat</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>@twitter</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <button type="button" class="btn input-lg pull-right btn-primary col-xs-12 col-md-5 pull-left" name="guardar" id="guardar">Guardar</button>
+                <button type="button" class="btn input-lg pull-right btn-success col-xs-12 col-md-5 pull-right" name="activar" id="activar">Activar</button>
+            </div>
+
+        </div>
+    </div>
+        
