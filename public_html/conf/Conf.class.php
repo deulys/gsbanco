@@ -1,4 +1,5 @@
 <?php
+namespace PDOConf;
 
 Class Conf{
    private $_domain;

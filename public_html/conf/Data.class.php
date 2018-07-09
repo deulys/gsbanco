@@ -11,6 +11,8 @@ Class Data {
 
     private function __construct() {
         /* Incluimos el fichero de la clase Conf */
+        require_once 'Conf.class.php';
+        $this->setConexion();
               
     }
 

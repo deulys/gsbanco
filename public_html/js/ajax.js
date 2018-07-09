@@ -1,38 +1,71 @@
 $(document).ready(function () {
     ///////DataTable
-   $('#users').dataTable({
-        "aProcessing": true,
-        "aServerSide": true,
-        "ajax": "/enrutador/listarVentas.php",
-        "order": [[ 0, "desc" ]],
-        language: {
-        "decimal": "",
-        "emptyTable": "No hay información",
-        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
-        "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
-        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
-        "infoPostFix": "",
-        "thousands": ",",
-        "lengthMenu": "Mostrar _MENU_ Entradas",
-        "loadingRecords": "Cargando...",
-        "processing": "Procesando...",
-        "search": "Buscar:",
-        "zeroRecords": "Sin resultados encontrados",
-        "paginate": {
-            "first": "Primero",
-            "last": "Ultimo",
-            "next": ">",
-            "previous": "<"
-        }
-    }
-    
-        
-    });
+//   $('#users').dataTable({
+//        "aProcessing": true,
+//        "aServerSide": true,
+//        "ajax": "/enrutador/listarVentas.php",
+//        "order": [[ 0, "desc" ]],
+//        language: {
+//        "decimal": "",
+//        "emptyTable": "No hay información",
+//        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+//        "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+//        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+//        "infoPostFix": "",
+//        "thousands": ",",
+//        "lengthMenu": "Mostrar _MENU_ Entradas",
+//        "loadingRecords": "Cargando...",
+//        "processing": "Procesando...",
+//        "search": "Buscar:",
+//        "zeroRecords": "Sin resultados encontrados",
+//        "paginate": {
+//            "first": "Primero",
+//            "last": "Ultimo",
+//            "next": ">",
+//            "previous": "<"
+//        }
+//    }
+//    
+//        
+//    });
    
+    //// ajax que carga las cuentas inactivas
+    $.ajax({
+        // En data puedes utilizar un objeto JSON, un array o un query string
+        data: {cr: 'gsbancoGetCuentas', cl: 'gsbanco', campos: 'numero'},
+        //Cambiar a type: POST si necesario
+        type: "POST",
+        // Formato de datos que se espera en la respuesta
+        //dataType: "json",
+        // URL a la que se enviará la solicitud Ajax
+        url: "../public_html/enrutador/index.php",
+    })
+            .done(function (data, textStatus, jqXHR) {
+                if (console && console.log) {
+                    //console.log("La solicitud se ha completado correctamente.");
+                    //console.log(data);
+                    var response = JSON.parse(data);
+                    //console.log(response[0].id);
+                    var a=0;
+                    
+                    $.each(response, function(){
+                        
+                        //console.log(response[a].id);
+                        $("#cuenta").append('<option value="'+response[a].id+'">'+response[a].numero+'</option>');
+                        a++;
+                     });
+                    $('#precio').html(response.valor*10+ ' Bs');
+                    //onsole.log(data);
+
+                }
+            });
     
     
-    
-    
+    //Agregar movimiento
+    $("#nuevo").click(function (e) { 
+    $('#movimiento').removeClass()('hidden');
+    });
+
     
     ///LLenado de footer
     
@@ -202,6 +235,46 @@ function contactar() {
         alerta(3, mensajeError, 1300);
     }
 }
+function guardar_movimiento() {
+
+   
+   
+    var monto = validarVacio('monto');
+    var tipo_movimiento = validarVacio('tipo_movimiento');
+    var fecha_movimiento = validarVacio('fecha_movimiento');
+    var descripcion = validarTexto('descripcion');
+    var cuenta=validarVacio('cuenta');
+
+
+    if ((monto == true && tipo_movimiento == true && fecha_movimiento == true && descripcion == true && cuenta==true)) {
+
+        var monto = $('#monto').val();
+        var tipo_movimiento = $('#tipo_movimiento').val();
+        var fecha_movimiento = $('#fecha_movimiento').val();
+        var descripcion = $('#descripcion').val();
+        var cuenta_id=$('#cuenta').val();
+        
+        //SE arma el array      
+        var array = {'monto': monto, 'tipo_movimiento':tipo_movimiento , 'fecha_movimiento': fecha_movimiento, 'descripcion': descripcion,'cuenta_id':cuenta_id};
+       
+        ajax_guardar_movimiento('gsbanco', 'guardarMovimiento', array);
+        limpiar_movimiento();
+
+    } else {
+
+        alerta(3, mensajeError, 1300);
+    }
+}
+
+/////limpia campos movimiento
+function limpiar_movimiento(){
+    $('#monto').val('');
+    $('#tipo_movimiento').val('');
+    $('#fecha_movimiento').val('');
+    $('#descripcion').val('');
+    
+    
+}
 
 function getFormData($form) {
     var unindexed_array = $form.serializeArray();
@@ -213,6 +286,62 @@ function getFormData($form) {
 
     return indexed_array;
 }
+
+function ajax_guardar_movimiento(cl, cr, data) {
+    //cargador();
+    //console.log(data);
+
+    //var $form = $("#vender");
+    //var data = getFormData($form);
+    //console.log(form);
+
+    $.ajax({
+        // En data puedes utilizar un objeto JSON, un array o un query string
+        data: {cr: cr, cl: cl, campos: data},
+        //Cambiar a type: POST si necesario
+        type: "POST",
+        // Formato de datos que se espera en la respuesta
+        //dataType: "json",
+        // URL a la que se enviará la solicitud Ajax
+        url: "enrutador/index.php",
+    })
+            .done(function (data, textStatus, jqXHR) {
+                if (console && console.log) {
+                    //console.log("La solicitud se ha completado correctamente.");
+                    //$('#precio').html(response.valor);
+                    console.log(data);
+
+                    var response = JSON.parse(data);
+                    //console.log(response);
+                    if (response.mensaje == 'mensaje') {
+                        //console.log('estoy aca perro');
+                        alerta(response.tipo_mensaje, response.mensaje_pantalla, response.tiempo);
+
+                    }
+                    if (response.valor > 0) {
+                        //console.log(response);
+                        $('#valor').val(response.valor);
+                        //console.log(response.valor);
+                       
+                    }
+                    if (response.resultado != 'undefined') {
+                        $('#revision_result').val(response.resultado);
+                    }
+
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                if (console && console.log) {
+                    console.log("La solicitud a fallado: " + textStatus);
+                }
+            });
+    //cargador();
+
+}
+
+
+
+
 function ajax_general_(cl, cr, data) {
     cargador();
     //console.log(data);
@@ -432,6 +561,41 @@ function selecciona(campo) {
 function cleanForm(frm) {
     $("#" + frm)[0].reset();
 }
+
+//Valida Saldos para activar botton
+
+function btn_activar(){
+  
+    if ($('#saldo_libro').val()==$('#saldo_banco').val() && $('#cuenta').val()!='' && $('#saldo_libro').val()!='' && $('#saldo_banco').val()!='' && $('#fecha').val()!=''  ){
+        
+        $('#activar').removeAttr('disabled');    
+        $('#movimiento').addClass('hidden');
+    }else{
+        $('#activar').attr('disabled',true);
+    }
+
+
+if ($('#saldo_libro').val()!=$('#saldo_banco').val() && $('#cuenta').val()!='' && $('#saldo_libro').val()!='' && $('#saldo_banco').val()!='' && $('#fecha').val()!=''  ){
+        
+        $('#nuevo').removeAttr('disabled');
+        
+        
+    }else{
+        $('#nuevo').attr('disabled',true);
+    }
+}
+
+//activar boon guardar
+function btn_activar_guardar(){
+    
+    if ($('#fecha_movimiento').val()!='' && $('#tipo_movimiento').val()!='' && $('#descripcion').val()!='' && $('#monto').val()!=''){
+        
+        $('#guardar').removeAttr('disabled');      
+    }else{
+        $('#guardar').attr('disabled',true);
+    }
+}
+
 
 //Mensaje de alerta
 

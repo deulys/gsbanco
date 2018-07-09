@@ -4,9 +4,9 @@ Class gsbanco {
 
     static $_instance;
 
-    private function __construct() {
+    public function __construct() {
         /* Incluimos el fichero de la clase Db */
-        require_once '../conf/Db.class.php';
+        require("../conf/Db.class.php");
         
     }
 
@@ -15,46 +15,42 @@ Class gsbanco {
     }
 
     public function gsbancoGetCuentasController() {
-        $bd = Db::getInstance();
-        $tabla = 'venta';
-        $where = 'WHERE identificadorVenta=' . $idventa . ' order by id desc';
-        $limit = ' limit 1';
-        //var_dump($array);
-        $sql = $bd->consultar($tabla, $limit, $where);
-        //var_dump($sql);
-        $stmt = $bd->ejecutar($sql);
-        $cantidad = mysqli_num_rows($stmt);
+        $db = new \PDOWrapper\DB;
+        $db->bindMore(array("activa"=>"0"));
+        return($cuentasInactivas = $db->query("SELECT id,numero FROM cuentas where activa= :activa"));
         
-        
-        
-        $array['cantidadPago'] = $valorVenta;
-        $tabla = 'venta';
-        date_default_timezone_set("America/Caracas");
-        $fecha = date("Y-m-d H:i:s");
-        $array['fechaVenta'] = $fecha;
-        $array['identificadorVenta'] = $array['cedula'] . date("dmyHis");
-
-        //var_dump($array);
-        $sql = $bd->query_insert($tabla, $array);
-        $stmt = $bd->ejecutar($sql);
+       
+      
         ///////Envio de mail
-        if($stmt==true){
-        $resultado=array("mensaje"=>'mensaje',"tipo_mensaje"=>4,"mensaje_pantalla"=>"Su Pago Sera Realizado a la Brevedad","tiempo"=>4000);
-            $this->enviarcorreo1($array);
-            return $resultado;
-            
-        }else{
-            $resultado=array("mensaje"=>'mensaje',"tipo_mensaje"=>3,"mensaje_pantalla"=>"Ha Ocurrido un Error Intente cargar su Venta Nuevamente","tiempo"=>4000);
-            return $resultado;
-        }
+//        if($stmt==true){
+//        $resultado=array("mensaje"=>'mensaje',"tipo_mensaje"=>4,"mensaje_pantalla"=>"Su Pago Sera Realizado a la Brevedad","tiempo"=>4000);
+//            $this->enviarcorreo1($array);
+//            return $resultado;
+//            
+//        }else{
+//            $resultado=array("mensaje"=>'mensaje',"tipo_mensaje"=>3,"mensaje_pantalla"=>"Ha Ocurrido un Error Intente cargar su Venta Nuevamente","tiempo"=>4000);
+//            return $resultado;
+//        }
         
         //$this->enviarcorreo1($array);
     }
 
-    public function valorController($vacio) {
+    public function guardarMovimientoController($campos) {
+        var_dump($campos);
+        $valores='';
+        foreach ($campos as $clave => $valor) {
+            // $array[3] se actualizará con cada valor de $array...
+            $cadena="$cadena{$clave} => {$valor},";
+            //print_r($array);
+        }
+        $valores=(trim($cadena));
+        var_dump($valores);
+        $db = new \PDOWrapper\DB;
         
-        $bd = Db::getInstance();        
-        $métodos_clase = get_class_methods($bd);       // o
+        $insert   =  $db->query("INSERT INTO movimiento(monto,tipo_movimiento,fecha_movimiento,descripcion,cuenta_id) VALUES(:monto,:tipo_movimiento,:fecha_movimiento,:descripcion,:cuenta_id)", array($valores));
+        var_dump($insert);
+        exit;
+        //$métodos_clase = get_class_methods($bd);       // o
         
         $tabla = 'valorcoin';
         $where = ' order by id desc';
