@@ -34,33 +34,27 @@ Class gsbanco {
         
         //$this->enviarcorreo1($array);
     }
+    
+ 
 
     public function guardarMovimientoController($campos) {
-        var_dump($campos);
-        $valores='';
-        foreach ($campos as $clave => $valor) {
-            // $array[3] se actualizará con cada valor de $array...
-            $cadena="$cadena{$clave} => {$valor},";
-            //print_r($array);
-        }
-        $valores=(trim($cadena));
-        var_dump($valores);
+        
         $db = new \PDOWrapper\DB;
         
-        $insert   =  $db->query("INSERT INTO movimiento(monto,tipo_movimiento,fecha_movimiento,descripcion,cuenta_id) VALUES(:monto,:tipo_movimiento,:fecha_movimiento,:descripcion,:cuenta_id)", array($valores));
-        var_dump($insert);
-        exit;
+        $insert   =  $db->query("INSERT INTO movimiento(monto,tipo_movimiento,fecha_movimiento,descripcion,cuenta_id) VALUES(:monto,:tipo_movimiento,:fecha_movimiento,:descripcion,:cuenta_id)", array("monto"=>$campos["monto"],"tipo_movimiento"=>$campos["tipo_movimiento"],"fecha_movimiento"=>$campos["fecha_movimiento"],"descripcion"=>$campos["descripcion"],"cuenta_id"=>$campos["cuenta_id"]));
+       if($insert > 0 ) {
+        /// se llama al ultimo movimiento ingresado para esta cuenta
+           $db->bind("cuenta_id",$campos['cuenta_id']);
+           return($ultimoMovimiento = $db->query("SELECT * FROM movimiento where cuenta_id= :cuenta_id order by id desc limit 1"));
+           
+      }
+      else{
+          $resultado=array("tipo_mensaje"=>3,"mensaje_pantalla"=>"Ha Ocurrido un Error Intente cargar el movimiento Nuevamente","tiempo"=>4000);
+          return $resultado;
+      }
         //$métodos_clase = get_class_methods($bd);       // o
         
-        $tabla = 'valorcoin';
-        $where = ' order by id desc';
-        $limit = ' limit 1';
-        //var_dump($array);
-        $sql = $bd->consultar($tabla, $limit, $where);
-        
-        $stmt = $bd->ejecutar($sql);
-        $resultado = mysqli_fetch_array($stmt);
-        return $resultado;
+        //return $resultado;
     }
 
     public static function getInstance1() {

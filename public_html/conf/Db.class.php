@@ -108,6 +108,7 @@ class DB
 		private function Init($query,$parameters = "")
 		{
 		# Connect to database
+                //var_dump($parameters);
 		if(!$this->bConnected) { $this->Connect(); }
 		try {
 				# Prepare query
@@ -121,9 +122,12 @@ class DB
 					{
 						$parameters = explode("\x7F",$param);
 						$this->sQuery->bindParam($parameters[0],$parameters[1]);
+                                                //var_dump($parameters);
 					}		
 				}
-				# Execute SQL 
+				# Execute SQL
+                                //var_dump($parameters);
+                                //exit;
 				$this->success = $this->sQuery->execute();		
 			}
 			catch(PDOException $e)
@@ -187,7 +191,8 @@ class DB
 				return $this->sQuery->fetchAll($fetchmode);
 			}
 			elseif ( $statement === 'insert' ||  $statement === 'update' || $statement === 'delete' ) {
-				return $this->sQuery->rowCount();	
+				var_dump($this->sQuery->rowCount());
+                                exit;
 			}	
 			else {
 				return NULL;

@@ -54,7 +54,7 @@ $(document).ready(function () {
                         $("#cuenta").append('<option value="'+response[a].id+'">'+response[a].numero+'</option>');
                         a++;
                      });
-                    $('#precio').html(response.valor*10+ ' Bs');
+                   
                     //onsole.log(data);
 
                 }
@@ -66,138 +66,7 @@ $(document).ready(function () {
     $('#movimiento').removeClass()('hidden');
     });
 
-    
-    ///LLenado de footer
-    
-    $('#cantidadVentas').load(function(){
-        
-    });
-
-
-
-////////HACE EL CAMBIO DE IMAGEN DEL PORTAFOLIO AL PRESIONAR CLICK EN LA IMAGENES MINIATURAS
-
-    $('#zoom').click(function () {
-        console.log($('#zoom').attr('src'));
-    });
-    $(window).scroll(function () {
-        if ($("#myNavbar ul li").hasClass("active")) {
-            $(".navbar").removeClass("transparency");
-        } else {
-            $(".navbar").addClass("transparency");
-        }
-    });
-
-    ////////Ir arriba 
-    $('.ir-arriba').click(function () {
-        $('body, html').animate({
-            scrollTop: '0px'
-        }, 300);
-    });
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 0) {
-            $('.ir-arriba').slideDown(300);
-        } else {
-            $('.ir-arriba').slideUp(300);
-        }
-    });
-    /////////EFECTO DE APARICION DE IMAGENES        
-    $(window).scroll(function () {
-        $(".slideanim").each(function () {
-            var pos = $(this).offset().top;
-
-            var winTop = $(window).scrollTop();
-            if (pos < winTop + 600) {
-                $(this).addClass("slide");
-            }
-        });
-    });
-    $(window).scroll(function () {
-        $(".slideanim").each(function () {
-            var pos = $(this).offset().top;
-
-            var winTop = $(window).scrollTop();
-            if (pos < winTop + 600) {
-                $(this).addClass("slide");
-            }
-        });
-    });
-
-                  
-////PRECIO
-$.ajax({
-        // En data puedes utilizar un objeto JSON, un array o un query string
-        data: {cr: 'valor', cl: 'tutibia', campos: ''},
-        //Cambiar a type: POST si necesario
-        type: "POST",
-        // Formato de datos que se espera en la respuesta
-        //dataType: "json",
-        // URL a la que se enviará la solicitud Ajax
-        url: "/enrutador/index.php",
-    })
-            .done(function (data, textStatus, jqXHR) {
-                if (console && console.log) {
-                    //console.log("La solicitud se ha completado correctamente.");
-                    var response = JSON.parse(data);
-                    $('#precio').html(response.valor*10+ ' Bs');
-                    //onsole.log(data);
-
-                }
-            });
-
-
-
-
-    // Initialize Tooltip
-    $('[data-toggle="tooltip"]').tooltip();
-
-    // Add smooth scrolling to all links in navbar + footer link
-    $(".navbar a, footer a[href='#myPage']").on('click', function (event) {
-
-        // Make sure this.hash has a value before overriding default behavior
-        if (this.hash !== "") {
-
-            // Prevent default anchor click behavior
-            event.preventDefault();
-
-            // Store hash
-            var hash = this.hash;
-
-            // Using jQuery's animate() method to add smooth page scroll
-            // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
-            $('html, body').animate({
-                scrollTop: $(hash).offset().top
-            }, 900, function () {
-
-                // Add hash (#) to URL when done scrolling (default click behavior)
-                window.location.hash = hash;
-            });
-        } // End if
-    });
-
-
 });
-
-var origheight = $("#trans1").height();
-var height = $(window).height();
-if (height > origheight) {
-    $("#trans1").height(height);
-}
-
-$(window).scroll(function () {
-    var x = $(this).scrollTop();
-    $('#trans1').css('background-position', 'center -' + parseInt(x / 5) + 'px');
-
-
-});
-$(window).on('load', function () {
-
-
-
-
-});
-
-
 /////REALIZAR COMPRA
 
 function contactar() {
@@ -257,8 +126,10 @@ function guardar_movimiento() {
         //SE arma el array      
         var array = {'monto': monto, 'tipo_movimiento':tipo_movimiento , 'fecha_movimiento': fecha_movimiento, 'descripcion': descripcion,'cuenta_id':cuenta_id};
        
-        ajax_guardar_movimiento('gsbanco', 'guardarMovimiento', array);
+        var data=ajax_guardar_movimiento('gsbanco', 'guardarMovimiento', array);
+        agregar_mov_tabla(data);
         limpiar_movimiento();
+        
 
     } else {
 
@@ -266,14 +137,29 @@ function guardar_movimiento() {
     }
 }
 
+
+///Agregar dinamicamente movimiento
+function agregar_mov_tabla(data) {
+    var table = document.getElementById("js-table");
+    var row = table.insertRow(0);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3= row.insertCell(2);
+    var cell4 = row.insertCell(3);
+    var cell5 = row.insertCell(3);
+    cell1.innerHTML = data.tipo_movimiento;
+    cell2.innerHTML = data.fecha_movimiento;
+    cell3.innerHTML = data.descripion;
+    cell4.innerHTML = data.monto;
+    cell5.innerHTML = '<button type="button" class="btn input-lg pull-right btn-success col-xs-12 col-md-5 pull-right" name="activar" id="activar" disabled="disabled">Activar</button>';
+ 
+}
 /////limpia campos movimiento
 function limpiar_movimiento(){
     $('#monto').val('');
     $('#tipo_movimiento').val('');
     $('#fecha_movimiento').val('');
-    $('#descripcion').val('');
-    
-    
+    $('#descripcion').val('');    
 }
 
 function getFormData($form) {
@@ -333,7 +219,21 @@ function ajax_guardar_movimiento(cl, cr, data) {
             .fail(function (jqXHR, textStatus, errorThrown) {
                 if (console && console.log) {
                     console.log("La solicitud a fallado: " + textStatus);
+                
+                    //console.log("La solicitud se ha completado correctamente.");
+                    console.log(data);
+                    var response = JSON.parse(data);
+                    //console.log(response[0].id);
+                    //si hay error en la carga
+                    if (response[0].tipo_mensaje=='3'){
+                        alerta(response[0].tipo_mensaje,response[0].mensaje_pantalla,response[0].tiempo);
+                    }else{
+                        
+                        agregar_mov_tabla(response[0]);
+                    }
+                    
                 }
+                
             });
     //cargador();
 
