@@ -123,6 +123,7 @@ class DB
 						$parameters = explode("\x7F",$param);
 						$this->sQuery->bindParam($parameters[0],$parameters[1]);
                                                 //var_dump($parameters);
+                                                //exit;
 					}		
 				}
 				# Execute SQL

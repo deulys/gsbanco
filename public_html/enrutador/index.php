@@ -13,8 +13,16 @@
            // $métodos_clase = get_class_methods($class);       // o
            // var_dump($métodos_clase);
             //exit;
-            
-              $query=$class->$metodo($_POST['campos']);
+            //var_dump($_POST);
+            //exit;
+              if(isset($_POST['condicion'])){
+                  $query=$class->$metodo($_POST['campos'],$_POST['condicion']);
+                  
+              }else{
+                  $query=$class->$metodo($_POST['campos']); 
+                  
+              }
+              //$query=$class->$metodo($_POST['campos']);
               //var_dump(count($query));
               //exit;
               print_r(json_encode($query));

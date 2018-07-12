@@ -29,7 +29,10 @@ $(document).ready(function () {
 //        
 //    });
    
-    //// ajax que carga las cuentas inactivas
+   
+            
+    
+    //// ajax que carga cuentas inactivas
     $.ajax({
         // En data puedes utilizar un objeto JSON, un array o un query string
         data: {cr: 'gsbancoGetCuentas', cl: 'gsbanco', campos: 'numero'},
@@ -43,7 +46,7 @@ $(document).ready(function () {
             .done(function (data, textStatus, jqXHR) {
                 if (console && console.log) {
                     //console.log("La solicitud se ha completado correctamente.");
-                    //console.log(data);
+                    console.log(data);
                     var response = JSON.parse(data);
                     //console.log(response[0].id);
                     var a=0;
@@ -60,13 +63,40 @@ $(document).ready(function () {
                 }
             });
     
-    
     //Agregar movimiento
     $("#nuevo").click(function (e) { 
     $('#movimiento').removeClass()('hidden');
     });
 
 });
+
+ //// ajax que carga movimientos po cuentas
+  $('#cuenta').on('change', function() {
+    var array = {'monto': 'monto', 'tipo_movimiento':'tipo_movimiento' , 'fecha_movimiento': 'fecha_movimiento', 'descripcion': 'descripcion','cuenta':'cuenta_id'};
+    var condicion=$('#cuenta').val();
+    $.ajax({
+        // En data puedes utilizar un objeto JSON, un array o un query string
+        data: {cr: 'gsbancoGetMovimiento', cl: 'gsbanco', campos: array,condicion:condicion},
+        //Cambiar a type: POST si necesario
+        type: "POST",
+        // Formato de datos que se espera en la respuesta
+        //dataType: "json",
+        // URL a la que se enviará la solicitud Ajax
+        url: "../public_html/enrutador/index.php",
+    })
+            .done(function (data, textStatus, jqXHR) {
+                if (console && console.log) {
+                    //console.log("La solicitud se ha completado correctamente.");
+                    //console.log(data);
+                    var response = JSON.parse(data);
+                    //console.log(response[0]);
+                    var a=0;
+                    agregar_mov_tabla(response);
+                   
+
+                }
+            });
+        });
 /////REALIZAR COMPRA
 
 function contactar() {
@@ -140,6 +170,7 @@ function guardar_movimiento() {
 
 ///Agregar dinamicamente movimiento
 function agregar_mov_tabla(data) {
+    console.log(data);
     var table = document.getElementById("js-table");
     var row = table.insertRow(0);
     var cell1 = row.insertCell(0);
@@ -147,10 +178,10 @@ function agregar_mov_tabla(data) {
     var cell3= row.insertCell(2);
     var cell4 = row.insertCell(3);
     var cell5 = row.insertCell(3);
-    cell1.innerHTML = data.tipo_movimiento;
-    cell2.innerHTML = data.fecha_movimiento;
-    cell3.innerHTML = data.descripion;
-    cell4.innerHTML = data.monto;
+    cell1.innerHTML = data[0].tipo_movimiento;
+    cell2.innerHTML = data[0].fecha_movimiento;
+    cell3.innerHTML = data[0].descripion;
+    cell4.innerHTML = data[0].monto;
     cell5.innerHTML = '<button type="button" class="btn input-lg pull-right btn-success col-xs-12 col-md-5 pull-right" name="activar" id="activar" disabled="disabled">Activar</button>';
  
 }

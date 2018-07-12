@@ -34,6 +34,40 @@ Class gsbanco {
         
         //$this->enviarcorreo1($array);
     }
+   public function key_implode($array, $glue) {
+    $result = "";
+    foreach ($array as $key => $value) {
+        $result .=  $value . $glue;
+    }
+   
+    return trim($result, ',');
+}
+    
+    public function gsbancoGetMovimientoController($campos,$condicion) {
+        $db = new \PDOWrapper\DB;
+        
+        $campos_string=$this->key_implode($campos,',');
+        //var_dump($condicion);
+        //exit;
+        $db->bind("cuenta_id",$condicion);
+        
+        return($cuentasInactivas = $db->query("SELECT $campos_string FROM movimiento where cuenta_id= :cuenta_id"));
+        
+       
+      
+        ///////Envio de mail
+//        if($stmt==true){
+//        $resultado=array("mensaje"=>'mensaje',"tipo_mensaje"=>4,"mensaje_pantalla"=>"Su Pago Sera Realizado a la Brevedad","tiempo"=>4000);
+//            $this->enviarcorreo1($array);
+//            return $resultado;
+//            
+//        }else{
+//            $resultado=array("mensaje"=>'mensaje',"tipo_mensaje"=>3,"mensaje_pantalla"=>"Ha Ocurrido un Error Intente cargar su Venta Nuevamente","tiempo"=>4000);
+//            return $resultado;
+//        }
+        
+        //$this->enviarcorreo1($array);
+    }
     
  
 
